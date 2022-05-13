@@ -49,3 +49,6 @@ test/integration
 
 # Excel temp files
 app/mappings/~*
+
+# Typescript compiled code
+dist/

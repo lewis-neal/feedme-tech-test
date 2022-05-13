@@ -4,7 +4,7 @@
   "description": "The FeedMe tech test comes with a mock data feed service that represents one of the many types of data feeds we have to process everyday at Sky Bet.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/lewis-neal/feedme-tech-test/issues"
   },
-  "homepage": "https://github.com/lewis-neal/feedme-tech-test#readme"
+  "homepage": "https://github.com/lewis-neal/feedme-tech-test#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^27.5.1",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2",
+    "typescript": "^4.6.4"
+  }
 }
