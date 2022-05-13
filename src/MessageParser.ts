@@ -1,7 +1,6 @@
 import { Message } from "./Messages";
 
-
-function parse(data: String): Message {
+function parse(data: String, typesSchema: any): Message {
     let tempData = data.replace(/\\\|/g, '@@@');
     const dataArray = tempData.split('|').map(str => {
         return str.replace(/@@@/g, '|');
@@ -14,36 +13,16 @@ function parse(data: String): Message {
         timestamp: parseInt(dataArray[4])
     };
 
-    let messageDetail = {};
-
-    if (type === "event") {
-        messageDetail = {
-            eventId: dataArray[5],
-            category: dataArray[6],
-            subCategory: dataArray[7],
-            name: dataArray[8],
-            startTime: parseInt(dataArray[9]),
-            displayed: dataArray[10] === '1',
-            suspended: dataArray[11] === '1'
-        };
-    } else if (type === "market") {
-        messageDetail = {
-            eventId: dataArray[5],
-            marketId: dataArray[6],
-            name: dataArray[7],
-            displayed: dataArray[8] === '1',
-            suspended: dataArray[9] === '1'
-        };
-    } else if (type === "outcome") {
-        messageDetail = {
-            marketId: dataArray[5],
-            outcomeId: dataArray[6],
-            name: dataArray[7],
-            price: dataArray[8],
-            displayed: dataArray[9] === '1',
-            suspended: dataArray[10] === '1'
-        };
-    }
+    let messageDetail: any = {};
+    typesSchema.types[type].body.field.forEach((el: { name: string ; index: string; datatype: string }) => {
+        if (el.datatype === 'string') {
+            messageDetail[el.name] = dataArray[parseInt(el.index) + 1];
+        } else if (el.datatype === 'integer') {
+            messageDetail[el.name] = parseInt(dataArray[parseInt(el.index) + 1]);
+        } else if (el.datatype === 'boolean') {
+            messageDetail[el.name] = dataArray[parseInt(el.index) + 1] === '1';
+        } 
+    });
 
     return { ...message, ...messageDetail };
 };
