@@ -6,5 +6,6 @@ const { parse } = require('./MessageParser');
 // todo - closing connection
 
 conn.on('data', (data: Buffer) => {
+    console.log(data.toString());
     console.log(parse(data.toString()));
 });
