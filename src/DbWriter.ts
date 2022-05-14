@@ -18,6 +18,19 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
         };
         return collection.insertOne(event);
     }
+
+    if (message.type === 'market' && message.operation === 'create') {
+        const market = {
+            marketId: (message as MarketMessage).marketId,
+            name: (message as MarketMessage).name,
+            displayed: (message as MarketMessage).displayed,
+            suspended: (message as MarketMessage).suspended
+        };
+        return collection.updateOne({
+             eventId: (message as MarketMessage).eventId },
+             { $addToSet: { markets: market}}
+        );
+    }
 }
 
 module.exports = {
