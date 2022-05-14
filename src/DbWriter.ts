@@ -17,9 +17,7 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
             suspended: (message as EventMessage).suspended
         };
         return collection.insertOne(event);
-    }
-
-    if (message.type === 'market') {
+    } else if (message.type === 'market') {
         const market = {
             marketId: (message as MarketMessage).marketId,
             name: (message as MarketMessage).name,
@@ -31,15 +29,33 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
             return collection.updateOne({
                 eventId: (message as MarketMessage).eventId },
                 { $addToSet: { markets: market}}
-            ).catch('here');
+            );
         } else if (message.operation === 'update') {
             return collection.updateOne({
                 eventId: (message as MarketMessage).eventId },
                 { $set: { "markets.$[marketId]": market}},
                 { arrayFilters: [ {marketId: (message as MarketMessage).marketId } ] }
-            ).then(console.log('successful market update')).catch((err: any) => {
+            ).catch((err: any) => {
                 // retry needed later
             });
+        }
+
+    } else if (message.type === 'outcome') {
+        const outcome = {
+            outcomeId: (message as OutcomeMessage).outcomeId,
+            name: (message as OutcomeMessage).name,
+            price: (message as OutcomeMessage).price,
+            displayed: (message as OutcomeMessage).displayed,
+            suspended: (message as OutcomeMessage).suspended
+        };
+
+        if (message.operation === 'create') {
+            const marketId = (message as OutcomeMessage).marketId;
+            return collection.updateOne(
+                { "markets.marketId": marketId },
+                { $addToSet: { "markets.$[market].outcomes": outcome } },
+                { arrayFilters: [ { "market.marketId": marketId } ] }
+            );
         }
     }
 }
