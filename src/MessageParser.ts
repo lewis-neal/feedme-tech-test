@@ -1,6 +1,6 @@
-import { Message } from "./Messages";
+import { EventMessage, MarketMessage, OutcomeMessage } from "./Messages";
 
-function parse(data: String, typesSchema: any): Message {
+function parse(data: String, typesSchema: any): EventMessage | MarketMessage | OutcomeMessage {
     let tempData = data.replace(/\\\|/g, '@@@');
     const dataArray = tempData.split('|').map(str => {
         return str.replace(/@@@/g, '|');
