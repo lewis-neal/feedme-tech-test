@@ -35,9 +35,7 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
                 eventId: (message as MarketMessage).eventId },
                 { $set: { "markets.$[marketId]": market}},
                 { arrayFilters: [ {marketId: (message as MarketMessage).marketId } ] }
-            ).catch((err: any) => {
-                // retry needed later
-            });
+            );
         }
 
     } else if (message.type === 'outcome') {

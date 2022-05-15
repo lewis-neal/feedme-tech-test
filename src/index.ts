@@ -6,8 +6,13 @@ const { write } = require('./DbWriter');
 
 schema.fetchSchema().then((typesSchema: any) => {
     conn.on('data', (data: Buffer) => {
-        const message = parse(data.toString(), typesSchema);
-        write(message).then((a: any) => {
-        });
+        try {
+            const message = parse(data.toString(), typesSchema);
+            write(message).catch((err: any) => {
+                console.log(err);
+            });
+        } catch (err) {
+            console.error(err);
+        }
     });
 });

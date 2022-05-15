@@ -26,20 +26,8 @@ interface OutcomeMessage extends Message {
     price: string
 }
 
-function getMessageType(message: Message): string {
-    if (message.type === 'event') {
-        return 'EventMessage';
-    }
-    if ((message as MarketMessage).marketId !== 'undefined') {
-        return 'MarketMessage';
-    }
-    return 'OutcomeMessage';
-}
-
-
 export {
     EventMessage,
     MarketMessage,
-    OutcomeMessage,
-    getMessageType
+    OutcomeMessage
 };

@@ -7,6 +7,6 @@ async function fetchSchema() {
     return parser.parse(response.data);
 }
 
-module.exports = {
+export {
     fetchSchema
 };
