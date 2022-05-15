@@ -1,4 +1,4 @@
-import { EventMessage, MarketMessage, OutcomeMessage } from "./Messages";
+import { EventMessage, MarketMessage, OutcomeMessage } from './Messages';
 
 function parse(data: String, typesSchema: any): EventMessage | MarketMessage | OutcomeMessage {
     if (typeof typesSchema !== 'object' || !typesSchema) {

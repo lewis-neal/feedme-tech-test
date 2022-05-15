@@ -1,4 +1,4 @@
-import { EventMessage, MarketMessage, OutcomeMessage } from "./Messages";
+import { EventMessage, MarketMessage, OutcomeMessage } from './Messages';
 import { MongoClient } from 'mongodb';
 const client = new MongoClient('mongodb://localhost:27017');
 
@@ -33,7 +33,7 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
         } else if (message.operation === 'update') {
             return collection.updateOne({
                 eventId: (message as MarketMessage).eventId },
-                { $set: { "markets.$[marketId]": market}},
+                { $set: { 'markets.$[marketId]': market}},
                 { arrayFilters: [ {marketId: (message as MarketMessage).marketId } ] }
             );
         }
@@ -50,9 +50,9 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
         if (message.operation === 'create') {
             const marketId = (message as OutcomeMessage).marketId;
             return collection.updateOne(
-                { "markets.marketId": marketId },
-                { $addToSet: { "markets.$[market].outcomes": outcome } },
-                { arrayFilters: [ { "market.marketId": marketId } ] }
+                { 'markets.marketId': marketId },
+                { $addToSet: { 'markets.$[market].outcomes': outcome } },
+                { arrayFilters: [ { 'market.marketId': marketId } ] }
             );
         }
     }

@@ -8,8 +8,8 @@ test('returns schema when get request is successful', async () => {
         data: '<a>a</a><b>b</b>'
     });
     await expect(fetchSchema()).resolves.toEqual({
-        a: "a",
-        b: "b"
+        a: 'a',
+        b: 'b'
     });
 });
 
