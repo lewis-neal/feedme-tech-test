@@ -1,59 +1,15 @@
-# FeedMe Tech Test
+# Tech Choices
 
-The FeedMe tech test comes with a mock data feed service that represents one of the many types of data feeds we have to process everyday at Sky Bet.
+- I've implemented my solution in Typescript as it has considerably less boilerplate/setup than creating a new Java application. The can be seen in how the core code required to listen to packets on port 8282 takes only a handful of lines. In a production application, Java might actually be the better choice, but given this was something I needed to be able to spin up fairly quickly, I went with Node.
+- The first thing the application does when starting is reachout to the /types endpoint to get the latest schema. It then uses this as a reference to transform the packets into JSON as they are received. In theory, if the schema changed, the service could be restarted to retreive the latest version from /types.
+- Message parsing logic has been split into its own module, and is unit tested to a reasonable level. Initially, the parser replaces escaped pipes with @@@ (this was chosen as it seemed an unlikely character string to crop up naturally). It then splits the string into an array using the remaining pipes as a delimiter, then replaces the escaped pipes.
+- Writing to the database has also been split into its own module. Due to time constraints, this code is only semi functional. Writing events, and to some extent markets, works correctly, but the code struggles to handle the load of the data stream, as there is no way in this implementation to enforce an ordering in which messages are applied to the database. This means that while the code for writing outcomes does technically work, it requires you to get lucky to see it, as most of the time the market for which outcomes are targeting has not been applied correctly. 
+- Had I more time, I would've split the receipt and writing of messages into two applications, bridged by one of the message brokers. I could then have used this to prevent any messages from being lost, and better enforced an ordering of writes to the database (this relies on Rabbit/Kafka letting me pull the message with the lowest messageId/sorting by messageId. As I've never used either I don't know how possible this is).
 
-The challenge is to consume and transform the proprietary mock data. The proprietary data format will need to be parsed and enriched with the relevant field names and data types. For more information about the feed please read the provider README: https://hub.docker.com/r/sbgfeedme/provider/
+# Running the solution
 
-## Tasks
-
-We realise everyone has different levels of skill and experience when it comes to development so we have listed different levels of tasks below for you to choose from. If you do not have the time or the knowledge to complete them all then that's ok, we just want to see how you approach the problem and get a feel for how you code.
-
-#### Basic Tasks
-* Create an app that connects the provider service on the exposed TCP port
-* Transform the proprietary data format into JSON using the field names and data types defined in the provider /types endpoint
-* Write unit tests
-
-#### Intermediate Tasks
-* Save the JSON into a NoSQL store with a document per fixture. Each document should contain the event data and the child markets and outcomes for the fixture
-
-#### Advanced Tasks
-Imagine that your app has been in use for a while now but the company has decided to start offering more fixtures. This has massively increased the number of packets being received and you have noticed that your NoSQL writes have become a bottleneck causing a packet latency that is too high for your real time data needs.
-
-Separating the responsibility of transforming to JSON and writing to NoSQL into separate apps should help remove the bottleneck and therefore reduce the packet latency. To facilitate doing this you will need to work out a sensible way of sharding / partitioning the JSON packets by implementing the use of a message queue service such as RabbitMQ or Kafka. 
-
-With that context in mind:
-
-* Implement a way of sharding / partitioning the transformed JSON packets via one or more message queues
-* Utilising the message queue(s) move your NoSQL logic into another app that can be run multiple times to enable concurrent NoSQL writes
-
-#### Additional Tasks
-* Implement a front end that displays the hierarchical NoSQL data. Use the Sky Bet website for layout and navigational inspiration
-* Create a Dockerfile for your app(s)
-
-## Languages
-
-We use a mixture of coding languages at Sky Bet but for data consumption we mainly use NodeJS and Java. For this tech test we recommend you use either NodeJS or Java, but if you don't know either or you can show off your skills better in another language then please do so.
-
-## Getting Started
-
-* Install Docker and Docker Compose: https://docs.docker.com/compose
-* Start the mock data feed by typing `docker-compose up` in the root of the test directory
-* Test mock feed API by opening a browser and navigating to http://localhost:8181/types
-* Test mock feed by opening a new terminal and typing `telnet localhost 8282`. You should see a stream of packets.
-* If the tests above succeed then you are ready to start coding. If you decide to attempt the Intermediate and Advanced tasks then we suggest adding to or using the services listed in the docker-compose.yml file
-* To destroy the test environment you can type `docker-compose down`
-
-## The Deliverable
-
-Replace the contents of this README.md with:
-
-  1. A covering note explaining the technology choices you have made.
-  1. Any instructions required to run your solution and tests in a Linux environment.
-
-Email as an attachment or a link the git bundled repository showing your commit history with all your commits on the master branch:
-
-        git bundle create <anything>.bundle --all --branches
-
-## Equality & Diversity
-
-We consider all candidates equally, fairly and without bias.  To that end, we ask that you do not leave any personally identifying information in your submission (such as your name within an author field or file, or in use as test data).  We run all VCS-based submissions through an anonymiser before assessment, so that there is no identifying information in the commit history, but this will only remove references in the committing author and email address, not deep in the code submitted.
+1. Make sure dependencies are installed by running `npm install`
+2. Make sure everything is compiled into typescript by running `npx tsc`
+3. Unit tests can be run with `npm test`
+4. The solution can be run with `npm start`
+5. Note that you'll need to run `docker-compose up` first to ensure the producer/database are running

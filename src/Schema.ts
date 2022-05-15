@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { XMLParser } from 'fast-xml-parser';
+import { parse } from './XmlParserWrapper';
 
 async function fetchSchema() {
     const response = await axios.get('http://localhost:8181/types');
-    const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '' });
-    return parser.parse(response.data);
+    return parse(response.data);
 }
 
 export {

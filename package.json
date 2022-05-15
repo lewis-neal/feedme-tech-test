@@ -4,6 +4,7 @@
   "description": "The FeedMe tech test comes with a mock data feed service that represents one of the many types of data feeds we have to process everyday at Sky Bet.",
   "main": "dist/src/index.js",
   "scripts": {
+    "start": "node ./dist/src/index.js",
     "test": "jest"
   },
   "repository": {
