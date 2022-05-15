@@ -1,5 +1,5 @@
 import { EventMessage, MarketMessage, OutcomeMessage } from "./Messages";
-const { MongoClient } = require('mongodb');
+import { MongoClient } from 'mongodb';
 const client = new MongoClient('mongodb://localhost:27017');
 
 async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
@@ -58,6 +58,6 @@ async function write(message: EventMessage | MarketMessage | OutcomeMessage) {
     }
 }
 
-module.exports = {
+export {
     write
 }

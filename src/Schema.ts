@@ -1,5 +1,5 @@
-const axios = require('axios');
-const { XMLParser } = require('fast-xml-parser');
+import axios from 'axios';
+import { XMLParser } from 'fast-xml-parser';
 
 async function fetchSchema() {
     const response = await axios.get('http://localhost:8181/types');

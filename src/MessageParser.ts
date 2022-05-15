@@ -38,6 +38,6 @@ function parse(data: String, typesSchema: any): EventMessage | MarketMessage | O
     }
 };
 
-module.exports = {
+export {
     parse
 };

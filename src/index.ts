@@ -1,10 +1,10 @@
-const net = require('net');
+import net from 'net';
+import { parse } from './MessageParser';
+import { fetchSchema } from './Schema';
+import { write } from './DbWriter';
 const conn = net.createConnection(8282, 'localhost');
-const { parse } = require('./MessageParser');
-const schema = require('./Schema');
-const { write } = require('./DbWriter');
 
-schema.fetchSchema().then((typesSchema: any) => {
+fetchSchema().then((typesSchema: any) => {
     conn.on('data', (data: Buffer) => {
         try {
             const message = parse(data.toString(), typesSchema);

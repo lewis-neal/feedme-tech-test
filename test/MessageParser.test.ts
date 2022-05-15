@@ -1,4 +1,4 @@
-const messageParser = require('../src/MessageParser');
+import { parse } from '../src/MessageParser';
 
 const testSchema = {
     types: {
@@ -42,7 +42,7 @@ const testSchema = {
 };
 
 test('parses event message', () => {
-    const result = messageParser.parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", testSchema);
+    const result = parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", testSchema);
     expect(result).toMatchObject({
         msgId: 11690,
         operation: "update",
@@ -59,7 +59,7 @@ test('parses event message', () => {
 });
 
 test('parses market message', () => {
-    const result = messageParser.parse("|11720|update|market|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|1445641a-ca23-40f1-b3d3-f148cf2a1394|Goal Handicap (+1)|1|0|", testSchema);
+    const result = parse("|11720|update|market|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|1445641a-ca23-40f1-b3d3-f148cf2a1394|Goal Handicap (+1)|1|0|", testSchema);
     expect(result).toMatchObject({
         msgId: 11720,
         operation: "update",
@@ -74,7 +74,7 @@ test('parses market message', () => {
 });
 
 test('parses outcome message', () => {
-    const result = messageParser.parse("|11759|update|outcome|1652465469908|0f4db2c6-037d-4479-9b58-630e3dba7989|aef4d8ac-17de-4e28-b20e-62a32d3e4191|\\|Newcastle\\||1/4|1|0|", testSchema);
+    const result = parse("|11759|update|outcome|1652465469908|0f4db2c6-037d-4479-9b58-630e3dba7989|aef4d8ac-17de-4e28-b20e-62a32d3e4191|\\|Newcastle\\||1/4|1|0|", testSchema);
     expect(result).toMatchObject({
         msgId: 11759,
         operation: "update",
@@ -91,24 +91,24 @@ test('parses outcome message', () => {
 
 test('throws if data is invalid', () => {
     expect(() => {
-        messageParser.parse("invalid", testSchema);
+        parse("invalid", testSchema);
     }).toThrowError(new Error('Received invalid message: invalid'));
 });
 
 test('throws if schema is null', () => {
     expect(() => {
-        messageParser.parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", null);
+        parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", null);
     }).toThrowError(new Error('Schema was invalid: null'));
 });
 
 test('throws if schema is empty', () => {
     expect(() => {
-        messageParser.parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", {});
+        parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", {});
     }).toThrowError(new Error('Schema was empty: {}'));
 });
 
 test('throws if schema is not an object', () => {
     expect(() => {
-        messageParser.parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", 1);
+        parse("|11690|update|event|1652465467925|bede9af4-21e5-49ff-b158-aadfdef303a7|Football|Sky Bet League One|\\|Bristol Rovers\\| vs \\|Charlton\\||1652465459695|1|0|", 1);
     }).toThrowError(new Error('Schema was invalid: 1'));
 });
